@@ -1,0 +1,40 @@
+name: karsajobs-CI
+on:
+  push:
+    branches: [ "karsajobs" ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Lint Dockerfile
+      run: docker run --rm -i hadolint/hadolint < Dockerfile
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.x
+
+    - name: Test the application
+      run: go test -v -short --count=1 $(go list ./...)
+
+    - name: login to GitHub Container Registry
+      uses: docker/login-action@v1
+      with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GH_TOKEN }}
+
+    - name: Build and push Docker Image
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        push: true
+        tags: ghcr.io/danuptraa/karsajobs:latest
+      env:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GH_TOKEN }}
