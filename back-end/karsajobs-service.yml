@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service #tipe object
+metadata:
+  namespace: karsajobs-ns #namespace yang digunakan
+  name: karsajobs-backend-service #nama object
+  labels:
+    app: karsajobs #label agar memudahkan pencarian
+spec:
+  type: NodePort #tipe yang digunakan
+  selector:
+    app: karsajobs 
+  ports:
+  - port: 8080

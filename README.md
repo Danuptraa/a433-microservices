@@ -1,2 +1,3 @@
-# a433-microservices
-Repository ini digunakan untuk kebutuhan kelas Belajar Membangun Arsitektur Microservices
+# Submission Proyek Membangun Arsitektur Microservices dengan Kubernetes
+
+Repository ini digunakan untuk submission Proyek Membangun Arsitektur Microservices dengan Kubernetes

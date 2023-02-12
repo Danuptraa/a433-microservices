@@ -1,0 +1,7 @@
+# api versi yang digunakan 
+apiVersion: v1
+kind: Namespace #tipe object yang dibuat
+metadata:
+  name: karsajobs-ns #nama object
+  labels:
+    app: karsajobs #label agar memudahkan pencarian

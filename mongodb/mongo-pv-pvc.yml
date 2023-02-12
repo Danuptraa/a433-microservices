@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: PersistentVolume #tipe object
+metadata:
+  namespace: karsajobs-ns #nama namespace
+  name: mongo-persistentvolume #nama object
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 1Gi #besaran kapasistas 1giga
+  accessModes:
+    - ReadWriteOnce #akses yang digunakan 
+  hostPath:
+    path: "/data/db" #path yang digunakan
+---
+
+#PVC yang akan mengclaim persistent volume diatas
+apiVersion: v1
+kind: PersistentVolumeClaim #tipe object
+metadata:
+  namespace: karsajobs-ns
+  name: mongo-pv-claim
+  labels:
+    app: mongo
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi

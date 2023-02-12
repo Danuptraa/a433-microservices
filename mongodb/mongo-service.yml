@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service #tipe object
+metadata:
+  name: mongo #nama object
+  namespace: karsajobs-ns #nama namespace
+  labels:
+    app: mongo-app #label
+spec:
+  ports:
+    - port: 27017 #port yang digunakan
+  selector:
+    app: mongo-app 
+  clusterIP: None

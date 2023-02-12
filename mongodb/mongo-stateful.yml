@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: StatefulSet #Tipe objek dari StatefulSet
+metadata:
+  namespace: karsajobs-ns #Nama namespace
+  name: mongo #Nama dari StatefulSet
+  labels:
+    app: mongo-app #Label aplikasi
+spec:
+  replicas: 1 #Jumlah replika pod yang diinginkan
+  selector:
+    matchLabels:
+      app: mongo-app #Label yang akan dipilih
+      tier: backend
+  serviceName: mongo #Nama service
+  template:
+    metadata:
+      namespace: karsajobs-ns #Namespace tempat template
+      labels:
+        app: mongo-app #Label aplikasi
+        tier: backend
+    spec:
+      containers:
+        - image: mongo:4.4.3 #Image yang akan digunakan
+          name: mongo #Nama container
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME_FILE #Environment variable untuk username MongoDB
+              value: /etc/mongo-credentials/MONGO_ROOT_USERNAME
+            - name: MONGO_INITDB_ROOT_PASSWORD_FILE #Environment variable untuk password MongoDB
+              value: /etc/mongo-credentials/MONGO_ROOT_PASSWORD
+          ports:
+            - containerPort: 27017 #Port yang digunakan oleh container
+              name: mongo
+          volumeMounts:
+            - name: mongo-persistent-storage #Nama volume yang akan digunakan
+              mountPath: /data/db #Path tempat volume akan dipasang
+            - name: mongo-config-map #Nama configMap yang akan digunakan
+              mountPath: /config #Path tempat configMap akan dipasang
+            - name: mongo-credentials #Nama secret yang akan digunakan
+              mountPath: /etc/mongo-credentials #Path tempat secret akan dipasang
+      volumes:
+        - name: mongo-persistent-storage #Nama volume
+          persistentVolumeClaim:
+            claimName: mongo-pv-claim #Nama claim yang akan dipakai
+        - name: mongo-config-map #Nama configMap
+          configMap:
+            name: mongo-config #Nama configMap
+            items: 
+              - key: mongo.conf #Key dari configMap
+                path: mongo.conf #Path tempat key akan dipasang
+        - name: mongo-credentials #Nama secret
+          secret:
+            secretName: mongo-credentials #Nama secret

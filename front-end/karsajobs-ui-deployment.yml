@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment #tipe object yang dibuat
+metadata:
+  namespace: karsajobs-ns #nama namespace
+  name: karsajobs-frontend #nama object
+  labels:
+    app: karsajobs-ui-frontend #label object
+spec:
+  replicas: 2 #replika sebanyak 2
+  selector:
+    matchLabels: 
+      app: karsajobs-ui 
+  template: #spesifikasi untuk pembuatan pod
+    metadata:
+      namespace: karsajobs-ns
+      labels:
+        app: karsajobs-ui
+    spec: #spesifikasi untuk countainer
+      containers:
+        - name: karsajobs-ui
+          image: danuptra/karsajobs-ui
+          ports:
+            - containerPort: 8000 
+          env:
+            - name: VUE_APP_BACKEND
+              value: http://192.168.39.40:31539

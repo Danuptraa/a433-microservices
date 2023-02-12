@@ -1,0 +1,42 @@
+# Mendefinisikan versi API Kubernetes yang digunakan
+apiVersion: apps/v1
+#mendefinisikan object Deployment
+kind: Deployment
+metadata:
+  namespace: karsajobs-ns # Namespace untuk deployment
+  name: karsajobs-backend # Nama object deployment
+  labels:
+    app: karsajobs 
+# Mendefinisikan spesifikasi untuk deployment
+spec:
+  replicas: 1 # Jumlah replika pod yang akan berjalan
+  selector:
+    matchLabels: 
+      app: karsajobs
+  # Mendefinisikan spesifikasi untuk membuat pod
+  template:
+    metadata:
+      namespace: karsajobs-namespace # Namespace untuk pod
+      labels:
+        app: karsajobs # Label yang digunakan untuk mencari pod
+    spec:
+      containers:
+        - name: karsajobs # Nama container
+          image: danuptra/karsajobs # Image yang digunakan untuk membuat container
+          ports:
+            - containerPort: 8080 # Port yang digunakan oleh aplikasi
+          env:
+            - name: APP_PORT # Nama environment variable
+              value: "8080" # Isi dari dari variable
+            - name: MONGO_HOST # Nama environment variable
+              value: "mongo" # Isi dari environment variable
+            - name: MONGO_USER # Nama environment variable
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-credentials # Nama secret yang digunakan
+                  key: MONGO_ROOT_USERNAME # kunci yang akan diambil di object secret
+            - name: MONGO_PASS # Nama environment variable
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-credentials # Nama secret yang digunakan untuk mendapatkan informasi autentikasi MongoDB
+                  key: MONGO_ROOT_PASSWORD # kunci yang akan diambil di object secret
